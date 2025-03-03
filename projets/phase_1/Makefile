@@ -1,7 +1,15 @@
-all: hello_world
+all: main test
 
-hello: hello_world.cpp
-	g++ -Wall -Wextra hello_world.cpp -o hello_world
+main: main.cpp
+	g++ -Wall -Wextra main.cpp -o main
+
+compileRun: main.cpp
+	make main
+	./main ./test.txt
+
+test:
+	make main
+	python3 tests1.py ./main
 
 clean:
-	rm hello_world
+	rm main
