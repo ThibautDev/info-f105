@@ -1,0 +1,63 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[a4paper,margin=0.5in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{titling} % Add the titling package
+
+\setlength{\droptitle}{-2cm} % Adjust space before title (if needed)
+
+
+\title{Rapport Projet Phase 1 (LDP)}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{La fonction \texttt{saturated(new\_value)}}
+Cette fonction retourne un \texttt{int} selon la formule de la documentation :
+\[
+\text{saturated}(n) = \min(\max(n, 0), 2^{16})
+\]
+Pour cela, j'utilise un système de \texttt{if} à 3 cas :
+\begin{itemize}
+    \item Si le nombre est plus grand que la valeur maximale qu'un \texttt{uint16\_t} peut avoir ($65.536$), alors retourner le maximum que peut contenir un \texttt{uint16\_t}.
+    \item S'il est plus petit que $0$, alors retourner le minimum que peut contenir un \texttt{uint16\_t}.
+    \item Sinon, cela signifie que le nombre est bien dans les bornes d'un \texttt{uint16\_t}, et on peut donc le retourner sans modification.
+\end{itemize}
+À noter que j'utilise la méthode \texttt{std::numeric\_limits} qui peut me donner les valeurs \texttt{max} et \texttt{min} d'un type.
+
+\section{La fonction \texttt{parse\_opcode(instr)}}
+Les opcodes (mots-clés) sont séparés des opérandes (arguments) par un espace. Je vais alors utiliser la fonction \texttt{find(' ')} pour trouver l'index de l'espace dans la chaîne de caractères de l'instruction, puis utiliser \texttt{substr(0, index du ' ')} pour retourner le sous-texte du début jusqu'à l'espace.
+
+À noter que lorsqu'il n'y a pas d'espace dans la ligne (pour les commandes \texttt{PRINT} et \texttt{IFNZ}), la fonction \texttt{find} renvoie la valeur \texttt{-1}, considérée comme l'indice universel pour le dernier élément d'une chaîne de caractères.
+
+\section{La fonction \texttt{parse\_operand(instr)}}
+Je commence par décomposer l'instruction avec la même méthode que dans \texttt{parse\_opcode()}, sauf qu'ici je ne mets que l'index de l'espace en paramètre, ce qui me retourne uniquement l'opérande au format \texttt{string}. Il ne reste plus qu'à le passer dans la fonction \texttt{stoi} qui transforme la chaîne en \texttt{int}.
+
+Enfin, le résultat est passé dans la fonction \texttt{saturated()} pour garantir une valeur contenue dans un \texttt{uint16\_t}, comme imposé dans l'énoncé.
+
+\section{La fonction \texttt{exec(program\_path)}}
+On définit \texttt{single\_register} à $0$ et on réserve une page mémoire pour \texttt{instruction} (la ligne qui va être lue) et \texttt{opcode} (le nom de l'instruction à exécuter). (Pas besoin de réserver une page pour les opérandes, car ils sont directement envoyés dans une fonction et stockés dans \texttt{single\_register} à la fin.)
+
+La méthode \texttt{std::ifstream instructions\_file(program\_path);} permet, avec \texttt{getline(instructions\_file, instruction)}, de stocker les lignes une par une dans \texttt{instruction}. Étant donné que cette fonction renvoie \texttt{false} une fois que toutes les lignes ont été lues, on peut l'utiliser dans la condition d'une boucle \texttt{while} pour continuer à lire jusqu'à la fin. Cela permet d'exécuter les instructions \textbf{à la volée}, comme demandé.
+
+Dans la boucle :
+\begin{itemize}
+    \item On extrait \texttt{opcode} avec \texttt{parse\_opcode(instruction)}.
+    \item On l'évalue avec une série de \texttt{if-else} pour exécuter la bonne fonction.
+\end{itemize}
+\textbf{Remarque :} Un \texttt{switch-case} aurait été plus optimisé, mais il ne fonctionne qu'avec les types natifs (\texttt{int}, \texttt{char}, ...) et non avec les \texttt{string}.
+
+\section{La fonction \texttt{main(int argc, char* argv[])}}
+Le paramètre \texttt{argc} contient le nombre d'arguments passés au programme (normalement $2$), et \texttt{argv[]} stocke ces arguments sous forme de tableau.
+
+L'argument d'index $1$ (le second) est passé à \texttt{exec(program\_path)} pour que \texttt{ifstream} puisse accéder au bon fichier.
+
+\textbf{Remarque :} J'ai ajouté une gestion d'erreur même si elle n'était pas demandée, afin d'éviter l'avertissement de variable \texttt{argc} non utilisée.
+
+\end{document}
