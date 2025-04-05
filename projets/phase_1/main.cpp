@@ -5,10 +5,10 @@
 
 uint16_t saturated(int new_value) {
     /* Return the saturated of an int when it's going outside the range of an unsigned 16 bits int. */
-    if (new_value < std::numeric_limits<uint16_t>::min()) {
-        return std::numeric_limits<uint16_t>::min();
-    } else if (new_value > std::numeric_limits<uint16_t>::max()) {
-        return std::numeric_limits<uint16_t>::max();
+    if (new_value < 0) {
+        return 0;
+    } else if (new_value > UINT16_MAX) {
+        return UINT16_MAX;
     } else {
         return new_value;
     }

@@ -1,0 +1,1 @@
+int fctAdd(int, int);
