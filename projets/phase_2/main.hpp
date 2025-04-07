@@ -1,11 +1,11 @@
-#include <iostream>
-#include <fstream>
-#include <stdexcept>
+#ifndef MAIN_HPP
+#define MAIN_HPP
 
 #include <string>
 #include <cstdint>
+#include <fstream>
 
-#include "memory.cpp"
+#include "memory.hpp"
 
 uint16_t saturated(int new_value);
 
@@ -19,3 +19,5 @@ uint16_t* get_register(const std::string& instruction, uint16_t* registers, int 
 uint16_t get_value(const std::string& instruction, uint16_t* registers);
 
 void exec(const std::string& program_path);
+
+#endif

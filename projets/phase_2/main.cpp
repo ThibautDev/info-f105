@@ -45,15 +45,38 @@ uint16_t* get_register(const std::string& instruction, uint16_t **registers, int
     }
 }
 
+uint16_t* get_register_2(const std::string& instruction, uint16_t **registers, int current_line) {
+    std::string operand = parse_second_operand(instruction);
+
+    if (is_register(operand)) {
+        return registers[operand[0] - 'a'];
+    } else {
+        throw std::invalid_argument("Invalid register name: " + operand + " at line " + std::to_string(current_line));
+    }
+}
+
 uint16_t get_value(const std::string& instruction, uint16_t** registers) {
     std::string operand = parse_second_operand(instruction);
-    // std::cout << 'hello';
 
     if (is_register(operand)) {
         return *registers[operand[0] - 'a'];
     } else {
         return saturated(stoi(operand));
     }
+}
+
+uint16_t get_value_2(const std::string& instruction, uint16_t** registers) {
+    std::string operand = parse_first_operand(instruction);
+
+    if (is_register(operand)) {
+        return *registers[operand[0] - 'a'];
+    } else {
+        return saturated(stoi(operand));
+    }
+}
+
+uint16_t get_adress(const std::string& instruction) {
+    return saturated(stoi(parse_first_operand(instruction)));
 }
 
 void exec(const std::string& program_path){
@@ -94,6 +117,24 @@ void exec(const std::string& program_path){
             if (*register_to_check == 0) {
                 getline (instructions_file, instruction);
             }
+        } else if (opcode == "STORE") {
+            uint16_t store_value = get_value(instruction, registers);
+            uint16_t stack_adress = get_adress(instruction);
+
+            MEMORY_HPP::write(stack_adress, store_value);
+        } else if (opcode == "LOAD") {
+            uint16_t stack_adress = get_adress(instruction);
+            uint16_t* register_to_load = get_register_2(instruction, registers, current_line);
+
+            *register_to_load = MEMORY_HPP::read(stack_adress);
+        } else if (opcode == "PUSH") {
+            uint16_t push_value = get_value_2(instruction, registers);
+            
+            MEMORY_HPP::push(push_value);
+        } else if (opcode == "POP") {
+            uint16_t* register_to_set = get_register(instruction, registers, current_line);
+
+            *register_to_set = MEMORY_HPP::pop();
         }
     }
 }

@@ -1,15 +1,13 @@
 all: main test
 
-main: main.cpp
+main: main.cpp memory.cpp
 	g++ -Wall -Wextra main.cpp memory.cpp -o main
 
-compileRun: main.cpp
-	make main
+run: main
 	./main ./test.txt
 
-test:
-	make main
-	python3 tests1.py ./main
+test: main
+	python3 tests2.py ./main
 
 clean:
 	rm main
