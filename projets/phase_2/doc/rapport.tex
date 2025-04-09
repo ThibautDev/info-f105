@@ -1,0 +1,51 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\pagenumbering{gobble}
+\geometry{margin=2.5cm}
+
+\title{Rapport Projet Phase 2 (LDP)}
+\author{PROPS Thibaut}
+\date{9 Avril 2025}
+
+\begin{document}
+
+\maketitle
+
+\section*{Les fonctions \texttt{parse}}
+
+Soit $n$, la position du mot que l'on veut analyser.  
+On calcule la position des $n + 1$ espaces, puis on prend la sous-chaîne de la chaîne d'instruction située entre le $n^\text{ième}$ et le $(n+1)^\text{ième}$ espaces pour extraire le mot souhaité.
+
+\section*{Fonction \texttt{is\_register()}}
+
+On vérifie si le prétendu nom de registre est bien une chaîne de caractères de longueur 1 et que c’est une lettre entre \texttt{a} et \texttt{d} (c’est-à-dire que sa représentation numérique se situe entre celle de \texttt{a} et celle de \texttt{d}).  
+Cette fonction permet de savoir, lorsque l'on veut connaître la valeur d’un objet, s’il s’agit d’une \texttt{l-value} ou d’une \texttt{r-value}.
+
+\section*{Fonction \texttt{write()}}
+
+Étant donné que les cases ne peuvent contenir que des nombres de 8 bits, on va découper le nombre en entrée en deux via la formule :
+
+\vspace{0.5em} 
+
+\begin{itemize}
+  \item \texttt{lower8 = value \& 0xff} : ne prendre que les 8 premiers bits du nombre.
+  \item \texttt{upper8 = value >> 8} : décale le nombre vers la droite. Et vu que nous sommes sur des entiers, cela supprime les 8 premiers bits et transforme les 8 derniers pour obtenir un nombre que l’on peut représenter sur 8 bits.
+\end{itemize}
+
+\vspace{0.5em} 
+
+Ainsi, on écrit dans la première case \texttt{lower8} puis dans la deuxième \texttt{upper8} (soit une représentation en \textit{Little-Endian}).
+
+\section*{Fonction \texttt{read()}}
+
+On va lire deux nombres 8 bits consécutifs pour reconstruire le nombre 16 bits via la formulation \textit{Little-Endian}.
+
+\section*{Fonctions \texttt{push()} et \texttt{pop()}}
+
+On va simplement appeler les fonctions \texttt{write()} et \texttt{read()} tout en mettant à jour la variable \texttt{stack\_pointer} afin d’avoir un \textit{ADT} de pile.
+
+\end{document}
