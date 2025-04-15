@@ -1,8 +1,8 @@
 #ifndef MEMORY_HPP
 #define MEMORY_HPP
 
-#include <cstdint>
 #include <iostream>
+#include <cstdint>
 #include <cstdio>
 
 uint16_t read(uint8_t address);

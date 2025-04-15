@@ -1,5 +1,9 @@
-#include "main.hpp"
+#include <iostream>
+#include <string>
+#include <cstdint>
+#include <fstream>
 
+#include "memory.hpp"
 
 uint16_t saturated(int new_value) {
     // Converts int to a bounded unsigned 16-bit int
