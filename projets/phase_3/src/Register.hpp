@@ -1,10 +1,9 @@
 #ifndef REGISTER_HPP
 #define REGISTER_HPP
 
-#include <iostream>
+#include <cstdint>
+#include "Saturated.cpp"
 
-
-uint16_t saturated(int new_value);
 
 class Register {
   private:

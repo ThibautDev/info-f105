@@ -1,12 +1,5 @@
 #include "Instruction.hpp"
-
-// struct Instruction {
-//     const Opcode opcode;
-//     const Operand* operands[2];
-//     Instruction(const std::string& raw);
-//     inline ~Instruction();
-// };
-
+#include <stdexcept>
 
 
 Opcode parse_opcode(const std::string& instr) {
@@ -53,30 +46,41 @@ Operand parse_operand(const std::string& operand_str){
     return operand;
 }
 
-Operand* parse_operands(const std::string& instr) {
-    Operand* operands = new Operand[2];
+Operand parse_first_operand(const std::string& instr) {
+    // Gets the first operand, the second word of an instruction line
 
+    int first_space_pos = instr.find(' ');
+    int second_space_pos = instr.find(' ', first_space_pos + 1);
+
+    std::string first_operand_str = instr.substr(first_space_pos + 1, second_space_pos - first_space_pos - 1);
+    return parse_operand(first_operand_str);
+}
+
+Operand parse_second_operand(const std::string& instr) {
+    // Gets the second operand, the third word of an instruction line
+    
     int first_space_pos = instr.find(' ');
     int second_space_pos = instr.find(' ', first_space_pos + 1);
     int third_space_pos = instr.find(' ', second_space_pos + 1);
 
-    operands[0] = parse_operand(
-        instr.substr(first_space_pos + 1, second_space_pos - first_space_pos - 1)
-    );
-
-    operands[1] = parse_operand(
-        instr.substr(second_space_pos + 1, third_space_pos - second_space_pos - 1)
-    );
-
-    return operands;
+    std::string second_operand_str = instr.substr(first_space_pos + 1, second_space_pos - first_space_pos - 1);
+    return parse_operand(second_operand_str);
 }
+
 
 bool is_register(const std::string& operand) {
     char register_name = operand[0];
     return ('a' <= register_name and register_name <= 'd' and operand.length() == 1);
 }
 
-Instruction::Instruction(const std::string& raw): 
-    opcode(parse_opcode(raw)),
-    operands(parse_operands(raw))
-{}
+Instruction::Instruction(const std::string& raw)
+    : opcode(parse_opcode(raw))
+{
+    operands[0] = new Operand(parse_first_operand(raw));
+    operands[1] = new Operand(parse_second_operand(raw));
+}
+
+Instruction::~Instruction() {
+    delete operands[0];
+    delete operands[1];
+}

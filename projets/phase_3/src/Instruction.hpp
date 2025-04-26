@@ -1,9 +1,11 @@
 #ifndef INSTRUCTION_HPP
 #define INSTRUCTION_HPP
 
-#include <iostream>
+#include "Saturated.cpp"
 
-#include "Register.hpp"
+#include <string>
+#include <cstdint>
+
 
 enum OperandType {
     NUMERIC,
@@ -32,8 +34,8 @@ struct Instruction {
 
 Opcode parse_opcode(const std::string& instr);
 
-Operand parse_operand(const std::string& instr);
-Operand* parse_operands(const std::string& instr);
+Operand parse_first_operand(const std::string& instr);
+Operand parse_second_operand(const std::string& instr);
 
 bool is_register(const std::string& operand);
 

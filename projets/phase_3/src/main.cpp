@@ -1,17 +1,11 @@
-#include <iostream>
 #include <fstream>
 
+#include "Instruction.cpp"
 #include "Register.hpp"
-#include "Instruction.hpp"
 
 
 void exec(const std::string& program_path) {
-    Register a_register, b_register, c_register, d_register;
-    Register* registers[4] = {&a_register, &b_register, &c_register, &d_register};
-
-
     std::string instruction;
-    Opcode current_opcode;
     std::ifstream instructions_file (program_path);
     int current_line = 0;
 
