@@ -1,5 +1,5 @@
 #include "Instruction.hpp"
-#include <stdexcept>
+
 
 
 Opcode parse_opcode(const std::string& instr) {
@@ -28,7 +28,8 @@ Opcode parse_opcode(const std::string& instr) {
     } else if (opcode_str == "POP") {
         return POP;
     } else {
-        throw std::invalid_argument("Unknown opcode: " + opcode_str);
+        // throw std::invalid_argument("Unknown opcode: " + opcode_str);
+        return ERROR;
     }
 }
 
@@ -40,7 +41,8 @@ Operand parse_operand(const std::string& operand_str){
         operand.parsed = operand_str[0] - 'a';
     } else {
         operand.type = NUMERIC;
-        operand.parsed = saturated(stoi(operand_str));
+        // operand.parsed = saturated(stoi(operand_str));
+        operand.parsed = stoi(operand_str);
     }
 
     return operand;
@@ -71,16 +73,4 @@ Operand parse_second_operand(const std::string& instr) {
 bool is_register(const std::string& operand) {
     char register_name = operand[0];
     return ('a' <= register_name and register_name <= 'd' and operand.length() == 1);
-}
-
-Instruction::Instruction(const std::string& raw)
-    : opcode(parse_opcode(raw))
-{
-    operands[0] = new Operand(parse_first_operand(raw));
-    operands[1] = new Operand(parse_second_operand(raw));
-}
-
-Instruction::~Instruction() {
-    delete operands[0];
-    delete operands[1];
 }

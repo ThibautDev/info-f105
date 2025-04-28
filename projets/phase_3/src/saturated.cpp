@@ -1,7 +1,7 @@
-#include "Saturated.hpp"
+#include "saturated.hpp"
 
 
-uint16_t saturated(int new_value) {
+constexpr uint16_t saturated(int new_value) {
     // Converts int to a bounded unsigned 16-bit int
 
     if (new_value < 0) {
