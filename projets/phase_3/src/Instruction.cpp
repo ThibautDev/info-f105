@@ -1,7 +1,6 @@
 #include "Instruction.hpp"
 
 
-
 Opcode parse_opcode(const std::string& instr) {
     std::string opcode_str = instr.substr(0, instr.find(' '));
  
@@ -17,6 +16,8 @@ Opcode parse_opcode(const std::string& instr) {
         return ADDr;
     } else if (opcode_str == "SUBr") {
         return SUBr;
+    } else if (opcode_str == "PRINT") {
+        return PRINT;
     } else if (opcode_str == "IFNZ") {
         return IFNZ;
     } else if (opcode_str == "STORE") {
@@ -33,17 +34,20 @@ Opcode parse_opcode(const std::string& instr) {
     }
 }
 
-Operand parse_operand(const std::string& operand_str){
+Operand parse_operand(const std::string& operand_str, const int pos_space_before_operand) {
     Operand operand; 
 
-    if (is_register(operand_str)) {
+    if (pos_space_before_operand == -1) {
+        operand.type = REGISTER;
+        operand.parsed = 0;
+    } else if (is_register(operand_str)) {
         operand.type = REGISTER;
         operand.parsed = operand_str[0] - 'a';
     } else {
         operand.type = NUMERIC;
         // operand.parsed = saturated(stoi(operand_str));
         operand.parsed = stoi(operand_str);
-    }
+    } 
 
     return operand;
 }
@@ -55,7 +59,7 @@ Operand parse_first_operand(const std::string& instr) {
     int second_space_pos = instr.find(' ', first_space_pos + 1);
 
     std::string first_operand_str = instr.substr(first_space_pos + 1, second_space_pos - first_space_pos - 1);
-    return parse_operand(first_operand_str);
+    return parse_operand(first_operand_str, first_space_pos);
 }
 
 Operand parse_second_operand(const std::string& instr) {
@@ -65,8 +69,8 @@ Operand parse_second_operand(const std::string& instr) {
     int second_space_pos = instr.find(' ', first_space_pos + 1);
     int third_space_pos = instr.find(' ', second_space_pos + 1);
 
-    std::string second_operand_str = instr.substr(first_space_pos + 1, second_space_pos - first_space_pos - 1);
-    return parse_operand(second_operand_str);
+    std::string second_operand_str = instr.substr(second_space_pos + 1, third_space_pos - second_space_pos - 1);
+    return parse_operand(second_operand_str, second_space_pos);
 }
 
 

@@ -18,6 +18,7 @@ struct Operand{
 enum Opcode {
     SETv, ADDv, SUBv, // Operation from given value
     SETr, ADDr, SUBr, // Operation from register value
+    PRINT,
     IFNZ, // Skip line if register is null
     STORE, LOAD, // Heap memory function
     PUSH, POP, // Stack memory function
@@ -25,6 +26,8 @@ enum Opcode {
 };
 
 Opcode parse_opcode(const std::string& instr);
+
+Operand parse_operand(const std::string& operand_str, const int pos_space_before_operand);
 
 Operand parse_first_operand(const std::string& instr);
 Operand parse_second_operand(const std::string& instr);

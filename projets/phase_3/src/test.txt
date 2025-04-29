@@ -1,1 +1,4 @@
-SETr a 12
+SETv a 12
+PUSH a
+POP b
+PRINT b
