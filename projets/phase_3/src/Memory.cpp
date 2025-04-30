@@ -7,8 +7,9 @@ uint8_t& Memory::operator[](uint16_t index)  {
 
 uint16_t Memory::pop(){
     return MEM[--SP];
+    // return 11;
 };
 
 void Memory::push(uint16_t value){
-    MEM[++SP] = value;
+    MEM[SP++] = value;
 };

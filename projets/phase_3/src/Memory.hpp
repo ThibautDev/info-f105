@@ -11,7 +11,7 @@ class Memory {
 
     public:
         inline Memory(uint8_t nbits){
-            uint8_t* MEM = new uint8_t[nbits];
+            MEM = new uint8_t[nbits];
         };
 
         inline ~Memory(){

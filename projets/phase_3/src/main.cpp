@@ -8,13 +8,18 @@
 
 void exec(const std::string& program_path){
     Register* registers = new REGISTER_HPP::Register[4];
+    Memory mem(255);
+
 
     std::string instruction_str;
     std::ifstream instructions_file (program_path);
 
     while (getline(instructions_file, instruction_str)) {
         Instruction current_instruction(instruction_str);
-        Memory mem(255);
+        // std::cout << current_instruction.opcode << std::endl;
+        // std::cout << current_instruction.operands[0] -> parsed << std::endl;
+        // std::cout << registers[current_instruction.operands[0] -> parsed] << std::endl;
+        // std::cout << current_instruction.operands[1] -> parsed << std::endl;
 
 
         switch (current_instruction.opcode) {
@@ -53,11 +58,11 @@ void exec(const std::string& program_path){
                 break;
 
             case STORE:
-                mem[current_instruction.operands[0] -> parsed] = current_instruction.operands[1] -> parsed;
+                // mem[current_instruction.operands[0] -> parsed] = current_instruction.operands[1] -> parsed;
                 break;
 
             case LOAD:
-                registers[current_instruction.operands[1] -> parsed] = mem[current_instruction.operands[0] -> parsed];
+                // registers[current_instruction.operands[1] -> parsed] = mem[current_instruction.operands[0] -> parsed];
                 break;
 
             case PUSH:
@@ -66,15 +71,12 @@ void exec(const std::string& program_path){
 
             case POP:
                 registers[current_instruction.operands[0] -> parsed] = mem.pop();
+                // std::cout << mem.pop();
                 break;
                 
             case ERROR:
               break;
-            }
-
-        std::cout << current_instruction.opcode << std::endl;
-        std::cout << current_instruction.operands[0] -> parsed << std::endl;
-        std::cout << current_instruction.operands[1] -> parsed << std::endl;
+        }
     }
 }
 

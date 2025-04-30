@@ -64,7 +64,7 @@ PRINT a
 PUSH a
 ADDr a a
 PUSH a
-SUBr a 20
+SUBv a 20
 PUSH a
 POP d
 PRINT d
