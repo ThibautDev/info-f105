@@ -5,4 +5,5 @@
 
 constexpr uint16_t saturated(int new_value);
 
+
 #endif

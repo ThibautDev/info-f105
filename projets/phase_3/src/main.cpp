@@ -2,9 +2,19 @@
 #include "Instruction.hpp"
 #include "Memory.hpp"
 
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 
+uint8_t test(uint16_t new_value) {    
+    if (new_value < 0) {
+        return 0;
+    } else if (new_value > UINT8_MAX) {
+        return UINT8_MAX;
+    } else {
+        return new_value;
+    }
+}
 
 void exec(const std::string& program_path){
     Register* registers = new REGISTER_HPP::Register[4];
@@ -58,11 +68,11 @@ void exec(const std::string& program_path){
                 break;
 
             case STORE:
-                // mem[current_instruction.operands[0] -> parsed] = current_instruction.operands[1] -> parsed;
+                mem[current_instruction.operands[0] -> parsed] = registers[current_instruction.operands[1] -> parsed];
                 break;
 
             case LOAD:
-                // registers[current_instruction.operands[1] -> parsed] = mem[current_instruction.operands[0] -> parsed];
+                registers[current_instruction.operands[1] -> parsed] = mem[current_instruction.operands[0] -> parsed];
                 break;
 
             case PUSH:
@@ -71,7 +81,6 @@ void exec(const std::string& program_path){
 
             case POP:
                 registers[current_instruction.operands[0] -> parsed] = mem.pop();
-                // std::cout << mem.pop();
                 break;
                 
             case ERROR:
@@ -84,3 +93,4 @@ int main(int argc, char* argv[]) {
     exec(argv[1]);
     return 0;
 }
+
