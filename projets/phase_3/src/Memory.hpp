@@ -9,20 +9,14 @@ class uint16_tMemoryReference {
         uint8_t* upper8;
 
     public:
-        uint16_tMemoryReference(uint8_t* MEM, uint8_t address) {
+        inline uint16_tMemoryReference(uint8_t* MEM, uint8_t address) {
             this->lower8 = &MEM[address];
             this->upper8 = &MEM[address + 1];
         };
 
-        uint16_tMemoryReference& operator=(uint16_t value) {
-            *lower8 = value & 0xff;
-            *upper8 = value >> 8;
-            return *this;
-        };
+        uint16_tMemoryReference& operator=(uint16_t value);
 
-        operator uint16_t() const {
-            return *lower8 + (*upper8 << 8);
-        }
+        operator uint16_t() const;
 };
 
 class Memory {
