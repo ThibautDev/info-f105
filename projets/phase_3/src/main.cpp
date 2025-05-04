@@ -17,58 +17,55 @@ void exec(const std::string& program_path){
     while (getline(instructions_file, instruction_str)) {
         Instruction current_instruction(instruction_str);
         
-        uint16_t first_operand = current_instruction.operands[0] -> parsed;
-        uint16_t second_operand = current_instruction.operands[1] -> parsed;
-
         switch (current_instruction.opcode) {
             case SETv:
-                registers[first_operand] = second_operand;
+                registers[current_instruction.operands[0] -> parsed] = current_instruction.operands[1] -> parsed;
                 break;
 
             case ADDv:
-                registers[first_operand] += second_operand;
+                registers[current_instruction.operands[0] -> parsed] += current_instruction.operands[1] -> parsed;
                 break;
 
             case SUBv:
-                registers[first_operand] -= second_operand;
+                registers[current_instruction.operands[0] -> parsed] -= current_instruction.operands[1] -> parsed;
                 break;
 
             case SETr:
-                registers[first_operand] = registers[second_operand];
+                registers[current_instruction.operands[0] -> parsed] = registers[current_instruction.operands[1] -> parsed];
                 break;
 
             case ADDr:
-                registers[first_operand] += registers[second_operand];
+                registers[current_instruction.operands[0] -> parsed] += registers[current_instruction.operands[1] -> parsed];
                 break;
 
             case SUBr:
-                registers[first_operand] -= registers[second_operand];
+                registers[current_instruction.operands[0] -> parsed] -= registers[current_instruction.operands[1] -> parsed];
                 break;
 
             case PRINT:
-                std::cout << registers[first_operand] << std::endl;
+                std::cout << registers[current_instruction.operands[0] -> parsed] << std::endl;
                 break;
 
             case IFNZ:
-                if (registers[first_operand] == 0) {
+                if (registers[current_instruction.operands[0] -> parsed] == 0) {
                     getline(instructions_file, instruction_str);
                 }
                 break;
 
             case STORE:
-                mem[first_operand] = registers[second_operand];
+                mem[current_instruction.operands[0] -> parsed] = registers[current_instruction.operands[1] -> parsed];
                 break;
 
             case LOAD:
-                registers[second_operand] = mem[first_operand];
+                registers[current_instruction.operands[1] -> parsed] = mem[current_instruction.operands[0] -> parsed];
                 break;
 
             case PUSH:
-                mem.push(registers[first_operand]);
+                mem.push(registers[current_instruction.operands[0] -> parsed]);
                 break;
 
             case POP:
-                registers[first_operand] = mem.pop();
+                registers[current_instruction.operands[0] -> parsed] = mem.pop();
                 break;
                 
             case ERROR:

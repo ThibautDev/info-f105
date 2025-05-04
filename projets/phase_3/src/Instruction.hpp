@@ -3,6 +3,7 @@
 
 #include <string>
 #include <cstdint>
+#include <iostream>
 
 
 enum Opcode {
@@ -27,10 +28,10 @@ struct Operand{
 
 Opcode parse_opcode(const std::string& instr);
 
-Operand parse_operand(const std::string& operand_str, const int pos_space_before_operand);
+Operand parse_operand(const std::string& operand_str);
 
-Operand parse_first_operand(const std::string& instr);
-Operand parse_second_operand(const std::string& instr);
+Operand *parse_first_operand(const std::string& instr);
+Operand *parse_second_operand(const std::string& instr);
 
 bool is_register(const std::string& operand);
 
@@ -41,8 +42,8 @@ struct Instruction {
     Instruction(const std::string& raw)
     : opcode(parse_opcode(raw)) 
     {
-        operands[0] = new Operand(parse_first_operand(raw));
-        operands[1] = new Operand(parse_second_operand(raw));
+        operands[0] = parse_first_operand(raw);
+        operands[1] = parse_second_operand(raw);
     };
 
     inline~Instruction(){

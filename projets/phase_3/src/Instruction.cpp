@@ -34,13 +34,10 @@ Opcode parse_opcode(const std::string& instr) {
     }
 }
 
-Operand parse_operand(const std::string& operand_str, const int pos_space_before_operand) {
+Operand parse_operand(const std::string& operand_str) {
     Operand operand; 
 
-    if (pos_space_before_operand == -1) {
-        operand.type = REGISTER;
-        operand.parsed = 0;
-    } else if (is_register(operand_str)) {
+    if (is_register(operand_str)) {
         operand.type = REGISTER;
         operand.parsed = operand_str[0] - 'a';
     } else {
@@ -51,25 +48,30 @@ Operand parse_operand(const std::string& operand_str, const int pos_space_before
     return operand;
 }
 
-Operand parse_first_operand(const std::string& instr) {
-    // Gets the first operand, the second word of an instruction line
-
+Operand* parse_first_operand(const std::string& instr) {
     int first_space_pos = instr.find(' ');
     int second_space_pos = instr.find(' ', first_space_pos + 1);
 
-    std::string first_operand_str = instr.substr(first_space_pos + 1, second_space_pos - first_space_pos - 1);
-    return parse_operand(first_operand_str, first_space_pos);
+    if (first_space_pos > 0) {
+        std::string first_operand_str = instr.substr(first_space_pos + 1, second_space_pos - first_space_pos - 1);
+        return new Operand(parse_operand(first_operand_str));
+    } else {
+        return nullptr;
+    }
 }
 
-Operand parse_second_operand(const std::string& instr) {
-    // Gets the second operand, the third word of an instruction line
-    
+Operand* parse_second_operand(const std::string& instr) {    
     int first_space_pos = instr.find(' ');
     int second_space_pos = instr.find(' ', first_space_pos + 1);
     int third_space_pos = instr.find(' ', second_space_pos + 1);
 
-    std::string second_operand_str = instr.substr(second_space_pos + 1, third_space_pos - second_space_pos - 1);
-    return parse_operand(second_operand_str, second_space_pos);
+    if (second_space_pos > 0) {
+        std::string second_operand_str = instr.substr(second_space_pos + 1, third_space_pos - second_space_pos - 1);
+        return new Operand(parse_operand(second_operand_str));
+    } else {
+        return nullptr;
+    }
+
 }
 
 

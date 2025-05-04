@@ -8,5 +8,8 @@ $(EXEC): src/main.cpp src/Instruction.cpp src/Memory.cpp
 test: $(EXEC)
 	python3 ./tests3.py ./$(EXEC)
 
+custom_test: $(EXEC)
+	./$(EXEC) test.txt
+
 clean:
 	rm -f $(EXEC)
