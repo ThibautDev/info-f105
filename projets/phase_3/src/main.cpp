@@ -72,7 +72,9 @@ void exec(const std::string& program_path){
                 break;
                 
             case ERROR:
-              break;
+                //  No error gestion asked
+                // Just ignore this case
+                break;
         }
     }
 }
