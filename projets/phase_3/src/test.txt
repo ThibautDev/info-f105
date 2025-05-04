@@ -1,6 +1,0 @@
-SETv a 150
-SETv b 130
-ADDr a b
-PUSH a
-POP c
-PRINT c

@@ -1,5 +1,5 @@
 #include "Instruction.hpp"
-// #include "saturated.hpp"
+#include "saturated.hpp"
 
 
 Opcode parse_opcode(const std::string& instr) {
@@ -30,7 +30,6 @@ Opcode parse_opcode(const std::string& instr) {
     } else if (opcode_str == "POP") {
         return POP;
     } else {
-        // throw std::invalid_argument("Unknown opcode: " + opcode_str);
         return ERROR;
     }
 }
@@ -46,8 +45,7 @@ Operand parse_operand(const std::string& operand_str, const int pos_space_before
         operand.parsed = operand_str[0] - 'a';
     } else {
         operand.type = NUMERIC;
-        // operand.parsed = saturated(stoi(operand_str));
-        operand.parsed = stoi(operand_str);
+        operand.parsed = saturated(stoi(operand_str));
     } 
 
     return operand;

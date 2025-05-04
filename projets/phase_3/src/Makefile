@@ -1,13 +1,12 @@
-all: clean compile run_test
+EXEC := bin/exec
 
-compile: main.cpp Instruction.cpp Memory.cpp saturated.cpp
-	g++ $^ -o main
+all: clean $(EXEC) test
 
-run_test: main
-	./main test.txt
+$(EXEC): src/main.cpp src/Instruction.cpp src/Memory.cpp 
+	g++ -Wall -Wextra $^ -o $@
 
-run_py_test: main
-	python3 ./tests3.py ./main
+test: $(EXEC)
+	python3 ./tests3.py ./$(EXEC)
 
 clean:
-	rm -f main
+	rm -f $(EXEC)

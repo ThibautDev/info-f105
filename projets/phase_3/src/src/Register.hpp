@@ -2,7 +2,7 @@
 #define REGISTER_HPP
 
 #include <cstdint>
-#include "saturated.cpp"
+#include "saturated.hpp"
 
 
 class Register {

@@ -1,9 +1,9 @@
-#include "saturated.hpp"
+#ifndef SATURATED_HPP
+#define SATURATED_HPP
 
+#include <cstdint>
 
 constexpr uint16_t saturated(int new_value) {
-    // Converts int to a bounded unsigned 16-bit int
-
     if (new_value < 0) {
         return 0;
     } else if (new_value > UINT16_MAX) {
@@ -12,3 +12,4 @@ constexpr uint16_t saturated(int new_value) {
         return new_value;
     }
 }
+#endif
