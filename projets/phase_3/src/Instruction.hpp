@@ -3,7 +3,6 @@
 
 #include <string>
 #include <cstdint>
-#include <iostream>
 
 
 enum Opcode {
@@ -24,11 +23,11 @@ enum OperandType {
 struct Operand{
     OperandType type;
     uint16_t parsed;
+
+    Operand(const std::string& raw);
 };
 
 Opcode parse_opcode(const std::string& instr);
-
-Operand parse_operand(const std::string& operand_str);
 
 Operand *parse_first_operand(const std::string& instr);
 Operand *parse_second_operand(const std::string& instr);

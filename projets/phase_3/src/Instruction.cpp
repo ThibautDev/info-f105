@@ -34,18 +34,14 @@ Opcode parse_opcode(const std::string& instr) {
     }
 }
 
-Operand parse_operand(const std::string& operand_str) {
-    Operand operand; 
-
+Operand::Operand(const std::string& operand_str) {
     if (is_register(operand_str)) {
-        operand.type = REGISTER;
-        operand.parsed = operand_str[0] - 'a';
+        type = REGISTER;
+        parsed = operand_str[0] - 'a';
     } else {
-        operand.type = NUMERIC;
-        operand.parsed = saturated(stoi(operand_str));
-    } 
-
-    return operand;
+        type = NUMERIC;
+        parsed = saturated(stoi(operand_str));
+    }
 }
 
 Operand* parse_first_operand(const std::string& instr) {
@@ -54,7 +50,7 @@ Operand* parse_first_operand(const std::string& instr) {
 
     if (first_space_pos > 0) {
         std::string first_operand_str = instr.substr(first_space_pos + 1, second_space_pos - first_space_pos - 1);
-        return new Operand(parse_operand(first_operand_str));
+        return new Operand(first_operand_str);
     } else {
         return nullptr;
     }
@@ -67,7 +63,7 @@ Operand* parse_second_operand(const std::string& instr) {
 
     if (second_space_pos > 0) {
         std::string second_operand_str = instr.substr(second_space_pos + 1, third_space_pos - second_space_pos - 1);
-        return new Operand(parse_operand(second_operand_str));
+        return new Operand(second_operand_str);
     } else {
         return nullptr;
     }
