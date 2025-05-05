@@ -4,17 +4,19 @@
 #include <cstdint>
 
 
-struct uint16_tMemoryReference {
-    uint8_t* lower8;
-    uint8_t* upper8;
+class uint16_tMemoryReference {
+    private:
+        uint8_t* lower8;
+        uint8_t* upper8;
+        
+    public:
+        inline uint16_tMemoryReference(uint8_t* MEM, uint8_t address)
+        : lower8(&MEM[address]), upper8(&MEM[address + 1])
+        {}
 
-    inline uint16_tMemoryReference(uint8_t* MEM, uint8_t address)
-    : lower8( &MEM[address]), upper8( &MEM[address + 1])
-    {}
+        uint16_tMemoryReference& operator=(uint16_t value);
 
-    uint16_tMemoryReference& operator=(uint16_t value);
-
-    operator uint16_t() const;
+        operator uint16_t() const;
 };
 
 class Memory {

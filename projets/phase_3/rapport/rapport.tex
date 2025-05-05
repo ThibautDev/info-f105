@@ -1,5 +1,6 @@
 \documentclass{article}
-\usepackage[top=1cm, bottom=2cm]{geometry}
+\usepackage[top=2cm, bottom=2cm]{geometry}
+\setlength{\parskip}{0.4em}
 \usepackage[strings]{underscore}
 
 \title{Rapport projet INFO-F105 - LDP1: phase 3}
@@ -14,27 +15,66 @@
 
 \subsection{À quoi sert le dernier opérateur de \texttt{class Register} ?}
 
-L'opérateur \texttt{uint16_t()} sert retourner la valeur de l'élément \textbf{privé} \texttt{_value} lorsque à appeler la élément classe \texttt{Register} comme \texttt{uint16_t()}.
+L'opérateur \texttt{uint16_t()} sert à retourner la valeur de l'élément \textbf{privé} \texttt{\_value} lorsqu'on utilise un objet de la classe \texttt{Register} comme un \texttt{uint16_t}.
 
 \begin{verbatim}
     Register a; // _value = 0 by default
     uint16_t val = a; // Call operator uint16_t()
 \end{verbatim}
 
-
 \subsection{Essayez de le retirer puis recompilez votre programme. Y a-t-il quelque chose qui a changé ?}
 
-Oui, étant donné que \texttt{_value} est un élément \textbf{privé}, il n'y a aucun moyen d'accédé à celui ci. Cependant si \texttt{Register} avait été un \texttt{struct} au lieu d'une \texttt{class}, nous n'aurions pas eu de problème d'accessibilité il serait possible d'accédé à \texttt{_value}.
+Oui, étant donné que \texttt{\_value} est un élément \textbf{privé}, il n'y a aucun moyen d'y accéder directement. Cependant, si \texttt{Register} avait été une \texttt{struct} au lieu d'une \texttt{class}, nous n'aurions pas eu de problème d'accessibilité et il aurait été possible d'accéder directement à \texttt{\_value}.
 
 \begin{verbatim}
     Register a; // _value = 0 by default
-    uint16_t val = a._value; // Call directly _value
+    uint16_t val = a._value; // Call directly uint16_t _value
+    uint16_t val = a; // error: cannot convert 'Register' to 'uint16_t'
 \end{verbatim}
+
+À noter qu'à présent, il n'est plus possible d'utiliser \texttt{a} sans l'attribut \texttt{.\_value}, car plus aucune surcharge ne permet d'obtenir un \texttt{uint16_t} depuis ce \texttt{Register}.
 
 \subsection{Que cela changerait-il si \texttt{Instruction} était une \texttt{class} plutôt qu'une \texttt{struct} ?}
 
-Si \texttt{Instruction} avait été une \texttt{class}, alors l'access aux éléments \texttt{opcode} et \texttt{operands} n'aurait pas pus se faire directement via \texttt{Instruction -> opcode}. On aurait du créé 2 \texttt{getter} et 2 \texttt{setter} pour pouvoir y acceder.
+Si \texttt{Instruction} avait été une \texttt{class}, alors l'accès aux éléments \texttt{opcode} et \texttt{operands} n'aurait pas pu se faire directement via \texttt{Instruction->opcode}. Il aurait fallu créer deux \texttt{getter} pour pouvoir y accéder.
 
-\section{Choix d'implémentation notables}
+\section{Choix d'implémentation}
+
+\subsection{Instruction}
+
+Lors de la définition de \texttt{struct Instruction}, il faut définir deux attributs.
+
+Le premier, \texttt{opcode}, est déterminé à l’aide de la fonction \texttt{parse\_opcode}, qui retourne la bonne valeur de \texttt{enum Opcode} via des \texttt{if else}, car les \texttt{std::string} ne supportent pas les \texttt{switch case}.
+
+Le second, \texttt{operands}, est un tableau de deux pointeurs vers des \texttt{struct Operand}. Pour cela, on vérifie d’abord, pour chaque opérande, s’il existe (c’est-à-dire si la position de l’espace précédent est définie et différente de -1). Si c’est le cas, on alloue dynamiquement un \texttt{Operand} (construit à partir de la chaîne correspondante) et on retourne son pointeur. Sinon, on retourne un pointeur nul (\texttt{nullptr}).
+
+\subsection{Memory}
+
+Le défi ici a été d'implémenter la surcharge de l'opérateur \texttt{[]} pour pouvoir lire ou modifier deux éléments \texttt{uint8_t} comme s'il s'agissait d'un seul \texttt{uint16_t}.
+
+Pour remédier à ce problème, la fonction de surcharge \texttt{operator[]} retourne un objet de type \texttt{class uint16\_tMemoryReference}. Cet objet est construit à partir du tableau de la mémoire et de l'adresse avec laquelle on souhaite interagir. Grâce à cela, on construit deux attributs \texttt{uint8\_t*} qui pointent respectivement sur les cases des 8 bits de poids faible et de poids fort.
+
+C’est ensuite cette classe qui surcharge les opérateurs \texttt{=} et \texttt{uint16\_t()}.  
+- Pour \texttt{operator=}, on découpe la valeur assignée en deux \texttt{uint8\_t} afin de modifier les deux pointeurs dans le bon format.  
+- Pour \texttt{uint16\_t()}, on fusionne les deux valeurs pointées pour obtenir un \texttt{uint16\_t}.
+
+\begin{verbatim}
+    Memory mem(255);
+
+    mem[42] = 1337;
+    // uint16_tMemoryReference -> *lower8 = &mem[42], *upper8 = &mem[43]
+    // *lower8 (mem[42]) = 1337 % 256 (and 0xff mask is faster)
+    // *upper8 (mem[43]) = 1337 // 256 (>> 8 shifting is faster)
+
+    uint16_t val = mem[19];
+    // uint16_tMemoryReference -> *lower8 = &mem[19], *upper8 = &mem[20]
+    // val = *lower8 (mem[19]) + *upper8 (mem[20]) << 8 (<< 8 shifting is faster)
+\end{verbatim}
+
+\subsection{Register}
+
+Ici, étant donné que toutes les fonctions sont définies comme \texttt{constexpr}, on peut tout déclarer dans le fichier header.
+
+J'ai défini ma fonction \texttt{saturated} (utilisée pour ne pas dépasser les bornes de \texttt{uint16\_t}) dans un autre fichier, afin d'éviter la répétition, car je l'utilise aussi dans \texttt{Operand}.
 
 \end{document}

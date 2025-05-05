@@ -6,6 +6,10 @@
 
 
 class Register {
+    /*
+    Define class Register and overload some operator to implement saturate feature
+    */
+
     private:
         uint16_t _value = 0;
         
@@ -26,6 +30,5 @@ class Register {
             return _value;
         };
 };
-
 
 #endif

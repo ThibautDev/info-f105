@@ -38,12 +38,7 @@ struct Instruction {
     const Opcode opcode;
     const Operand* operands[2];
 
-    Instruction(const std::string& raw)
-    : opcode(parse_opcode(raw)) 
-    {
-        operands[0] = parse_first_operand(raw);
-        operands[1] = parse_second_operand(raw);
-    };
+    Instruction(const std::string& raw);
 
     inline~Instruction(){
         delete operands[0];

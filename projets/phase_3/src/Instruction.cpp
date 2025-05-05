@@ -3,7 +3,11 @@
 
 
 Opcode parse_opcode(const std::string& instr) {
-    std::string opcode_str = instr.substr(0, instr.find(' '));
+    /*
+    Return the corresponding enum Opcode from an instruction string
+    */
+    
+    std::string opcode_str = instr.substr(0, instr.find(' ')); // Get the opcode substring
  
     if (opcode_str == "SETv") {
         return SETv;
@@ -35,6 +39,10 @@ Opcode parse_opcode(const std::string& instr) {
 }
 
 Operand::Operand(const std::string& operand_str) {
+    /*
+    Build Operand by checking if the opperand is a register or a value
+    */
+
     if (is_register(operand_str)) {
         type = REGISTER;
         parsed = operand_str[0] - 'a';
@@ -45,6 +53,10 @@ Operand::Operand(const std::string& operand_str) {
 }
 
 Operand* parse_first_operand(const std::string& instr) {
+    /*
+    Get the substring of the first operand from an instruction line and allocate it in memory if the operand exist
+    */
+
     int first_space_pos = instr.find(' ');
     int second_space_pos = instr.find(' ', first_space_pos + 1);
 
@@ -56,7 +68,11 @@ Operand* parse_first_operand(const std::string& instr) {
     }
 }
 
-Operand* parse_second_operand(const std::string& instr) {    
+Operand* parse_second_operand(const std::string& instr) {   
+    /*
+    Get the substring of the second operand from an instruction line and allocate it in memory if the operand exist
+    */
+
     int first_space_pos = instr.find(' ');
     int second_space_pos = instr.find(' ', first_space_pos + 1);
     int third_space_pos = instr.find(' ', second_space_pos + 1);
@@ -70,8 +86,18 @@ Operand* parse_second_operand(const std::string& instr) {
 
 }
 
-
 bool is_register(const std::string& operand) {
+    /*
+    Check if the given operand is a value or a register
+    */
+
     char register_name = operand[0];
     return ('a' <= register_name and register_name <= 'd' and operand.length() == 1);
 }
+
+Instruction::Instruction(const std::string& raw)
+: opcode(parse_opcode(raw)) 
+{
+    operands[0] = parse_first_operand(raw);
+    operands[1] = parse_second_operand(raw);
+};
